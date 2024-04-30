@@ -12,10 +12,10 @@ on:
       - '.github/workflows/build-and-push-to-ecr.yml'
 env:
   AWS_REGION: us-east-1          # AWS region where the resources are hosted
-  ECR_REPOSITORY: haad-repo      # ECR repository name where the Docker image is stored
-  ECS_CLUSTER: haad-cluster      # New ECS cluster name
-  ECS_SERVICE: haad-l-service      # New ECS service name
-  CONTAINER_NAME: haad-container # Container name in the ECS task definition
+  ECR_REPOSITORY: maad-repo      # ECR repository name where the Docker image is stored
+  ECS_CLUSTER: maad-cluster      # New ECS cluster name
+  ECS_SERVICE: maad-l-service      # New ECS service name
+  CONTAINER_NAME: maad-container # Container name in the ECS task definition
 
 jobs:
   build-and-push:
