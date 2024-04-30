@@ -1,14 +1,14 @@
 {
-    "family": "haad-postfix-task",
-    "taskRoleArn": "arn:aws:iam::730335592874:role/ecsTaskExecutionRole",
-    "executionRoleArn": "arn:aws:iam::730335592874:role/ecsTaskExecutionRole",
+    "family": "maad-postfix-task",
+    "taskRoleArn": "arn:aws:iam::533267102375:role/ecsTaskExecutionRole",
+    "executionRoleArn": "arn:aws:iam::533267102375:role/ecsTaskExecutionRole",
     "networkMode": "awsvpc",
     "cpu": "256",
     "memory": "1024",
     "containerDefinitions": [
         {
             "name": "haad-postfix",
-            "image": "730335592874.dkr.ecr.us-east-1.amazonaws.com/postfix-repo:latest",
+            "image": "533267102375.dkr.ecr.us-east-1.amazonaws.com/mostfix-repo:latest",
             "cpu": 256,
             "memory": 1024,
             "portMappings": [
@@ -38,7 +38,7 @@
                 "logDriver": "awslogs",
                 "options": {
                     "awslogs-create-group": "true",
-                    "awslogs-group": "/ecs/haad-postfix-container",
+                    "awslogs-group": "/ecs/maad-postfix-container",
                     "awslogs-region": "us-east-1",
                     "awslogs-stream-prefix": "ecs"
                 }

@@ -1,14 +1,14 @@
 {
-    "family": "haad-l-task",
-    "taskRoleArn": "arn:aws:iam::730335592874:role/ecsTaskExecutionRole",
-    "executionRoleArn": "arn:aws:iam::730335592874:role/ecsTaskExecutionRole",
+    "family": "maad-l-task",
+    "taskRoleArn": "arn:aws:iam::533267102375:role/ecsTaskExecutionRole",
+    "executionRoleArn": "arn:aws:iam::533267102375:role/ecsTaskExecutionRole",
     "networkMode": "awsvpc",
     "cpu": "256",
     "memory": "1024",
     "containerDefinitions": [
         {
-            "name": "haad-link",
-            "image": "730335592874.dkr.ecr.us-east-1.amazonaws.com/haad-repo:latest",
+            "name": "maad-link",
+            "image": "533267102375.dkr.ecr.us-east-1.amazonaws.com/maad-repo:latest",
             "cpu": 256,
             "memory": 1024,
             "portMappings": [
@@ -23,7 +23,7 @@
                 "logDriver": "awslogs",
                 "options": {
                     "awslogs-create-group": "true",
-                    "awslogs-group": "/ecs/haad-l-task",
+                    "awslogs-group": "/ecs/maad-l-task",
                     "awslogs-region": "us-east-1",
                     "awslogs-stream-prefix": "ecs"
                 }

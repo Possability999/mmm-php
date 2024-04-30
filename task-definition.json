@@ -1,14 +1,14 @@
 {
     "family": "haad-container",
-    "taskRoleArn": "arn:aws:iam::730335592874:role/ecsTaskExecutionRole",
-    "executionRoleArn": "arn:aws:iam::730335592874:role/ecsTaskExecutionRole",
+    "taskRoleArn": "arn:aws:iam::533267102375:role/ecsTaskExecutionRole",
+    "executionRoleArn": "arn:aws:iam::533267102375:role/ecsTaskExecutionRole",
     "networkMode": "awsvpc",
     "cpu": "256",
     "memory": "1024",
     "containerDefinitions": [
         {
-            "name": "haad-link",
-            "image": "730335592874.dkr.ecr.us-east-1.amazonaws.com/haad-repo:latest",
+            "name": "maad-link",
+            "image": "533267102375.dkr.ecr.us-east-1.amazonaws.com/maad-repo:latest",
             "cpu": 256,
             "memory": 1024,
             "portMappings": [
