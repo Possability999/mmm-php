@@ -10,7 +10,7 @@ on:
       - 'task-definition-haad-postfix.json'
 env:
   AWS_REGION: us-east-1          # AWS region where the resources are hosted
-  ECR_REPOSITORY: postfix-repo      # ECR repository name where the Docker image is stored
+  ECR_REPOSITORY: mostfix-repo      # ECR repository name where the Docker image is stored
   ECS_CLUSTER: maad-cluster      # New ECS cluster name
   ECS_SERVICE: maad-postfix-service      # New ECS service name
   CONTAINER_NAME: maad-container # Container name in the ECS task definition
