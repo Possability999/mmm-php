@@ -1,0 +1,59 @@
+name: Deploy PHP Application to AWS ECS
+
+on:
+  push:
+    branches:
+      - main  # Triggers on pushes to the main branch
+    paths:
+      - 'link/**'
+      - 'pay/**'
+      - 'paid/**'
+      - 'Dockerfile'
+      - '.github/workflows/build-and-push-to-ecr.yml'
+env:
+  AWS_REGION: us-east-1          # AWS region where the resources are hosted
+  ECR_REPOSITORY: haad-repo      # ECR repository name where the Docker image is stored
+  ECS_CLUSTER: haad-cluster      # New ECS cluster name
+  ECS_SERVICE: haad-l-service      # New ECS service name
+  CONTAINER_NAME: haad-container # Container name in the ECS task definition
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        arch:
+          - arm64
+        variant:
+          - v8
+    name: Build and Push Docker Image to ECR
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
+
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v2
+
+    - name: Build, tag, and push image to Amazon ECR
+      run: |
+        docker build -t ${{ env.ECR_REPOSITORY }} .
+        docker tag ${{ env.ECR_REPOSITORY }} ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}
+        docker push ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}
+
+    - name: Deploy Docker image to ECS
+      run: |
+        # Register the new task definition
+        NEW_TASK_DEFINITION_ARN=$(aws ecs register-task-definition --cli-input-json file://task-definition-haad-l.json --query 'taskDefinition.taskDefinitionArn' --output text)
+
+        # Update the ECS service with the new task definition
+        aws ecs update-service --cluster ${{ env.ECS_CLUSTER }} --service ${{ env.ECS_SERVICE }} --task-definition $NEW_TASK_DEFINITION_ARN --force-new-deployment --region ${{ env.AWS_REGION }}
+
+

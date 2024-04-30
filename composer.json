@@ -1,0 +1,7 @@
+{
+    "require": {
+        "stripe/stripe-php": "^14.1",
+        "mixpanel/mixpanel-php": "^2.11",
+        "twig/twig": "^3.0"
+    }
+}

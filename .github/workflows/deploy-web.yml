@@ -1,0 +1,92 @@
+name: Build and Deploy static website to AWS S3
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'www/**'
+      - '.github/workflows/deploy-web.yml'
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.1'
+        extensions: mbstring, zip
+        tools: composer
+
+    - name: Install PHP dependencies
+      run: |
+        cd www  # Change directory if your composer.json is not in the root
+        composer install --prefer-dist --no-progress
+        ls -al  # Lists the contents to verify the vendor directory is created
+
+    - name: Prepare the Apache document root
+      run: |
+        sudo rm -rf /var/www/html/*
+        sudo cp -a ./www/. /var/www/html/  # Copy everything from www to /var/www/html
+        sudo mv /var/www/html/vendor /var/www/  # Move vendor to /var/www
+        sudo chown -R www-data:www-data /var/www/html
+        sudo chown -R www-data:www-data /var/www
+
+    - name: Start Apache server
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y apache2 libapache2-mod-php8.1
+        sudo service apache2 restart
+
+    - name: Install Node.js for tooling
+      uses: actions/setup-node@v4
+      with:
+        node-version: '21'  # Using Node.js version 21 as you specified
+
+    - name: Check for broken links
+      run: |
+        npm install -g broken-link-checker
+        blc http://localhost -ro --verbose
+
+    - name: Crawl website to generate static files
+      run: |
+        #curl -s -D - http://localhost/voucher/
+        #tail /var/log/apache2/error.log
+        wget --recursive --verbose --html-extension --convert-links --adjust-extension --page-requisites http://localhost/ -P www/dist -e robots=off 
+        wget --verbose --html-extension --convert-links --adjust-extension --page-requisites http://localhost/404.php -P www/dist -e robots=off 
+        mv www/dist/localhost/404.php.html www/dist/localhost/404.html
+        
+    - name: Install HTML Minifier
+      run: npm install -g html-minifier
+
+    - name: Minify HTML
+      run: html-minifier --input-dir ./www/dist/localhost/ --output-dir ./www/dist/new/ --collapse-whitespace --remove-comments --minify-css true --minify-js true
+
+    - name: Install HTML Validator
+      run: npm install -g html-validate
+
+    - name: Validate HTML
+      run: html-validate ./www/dist/new/
+
+#    - name: Check for required content
+#      run: |
+#        grep -R "CEO" www/dist || exit 1
+
+    - name: Sync directory to S3 with Cache Control
+      run: |
+        sudo cp -a ./www/robots.txt ./www/dist/new/
+        aws s3 sync www/dist/new/ s3://haad.com/ --delete --follow-symlinks \
+          --cache-control "max-age=3600, must-revalidate"
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        AWS_REGION: 'us-east-1'
+
+    - name: Cleanup
+      run: |
+        sudo rm -rf www/dist/*
+

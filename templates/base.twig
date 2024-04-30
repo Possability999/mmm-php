@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="/css/styles.css">
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-CSSF8WJ83V"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-CSSF8WJ83V');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{{ title | default('Default Title') }}{% endblock %}</title>
+    <style>
+        :root {
+            --primary-bg: #f4f4f9;
+            --accent-color: #0056b3;
+            --text-color: #333;
+            --font-family: 'Helvetica Neue', sans-serif;
+        }
+        /* Additional CSS */
+    </style>
+</head>
+<body>
+    {% block header %}
+        {% include 'header.twig' %}
+    {% endblock %}
+
+    {% block content %}
+        <!-- This block will be overridden by individual pages -->
+    {% endblock %}
+
+    {% block footer %}
+        {% include 'footer.twig' %}
+    {% endblock %}
+</body>
+</html>
+

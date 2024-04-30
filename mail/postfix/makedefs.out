@@ -1,0 +1,48 @@
+# Do not edit -- this file documents how Postfix was built for your machine.
+#----------------------------------------------------------------
+# Start of summary of user-configurable 'make makefiles' options.
+# CCARGS=-DHAS_MYSQL -I/usr/include/mariadb/ -DUSE_SASL_AUTH      -DUSE_SASL_AUTH -DDEF_SERVER_SASL_TYPE=\"dovecot\" -DUSE_TLS
+# AUXLIBS=-lssl -lcrypto
+# AUXLIBS_MYSQL=-L/usr/lib/x86_64-linux-gnu/ -lmariadbclient -lz -lm
+# shared=
+# dynamicmaps=yes
+# pie=
+# End of summary of user-configurable 'make makefiles' options.
+#--------------------------------------------------------------
+# System-dependent settings and compiler/linker overrides.
+SYSTYPE	= LINUX6
+_AR	= ar
+ARFL	= rv
+_RANLIB	= ranlib
+SYSLIBS	= -lssl -lcrypto -ldb -lnsl -lresolv -ldl 
+AUXLIBS_MYSQL = -L/usr/lib/x86_64-linux-gnu/ -lmariadbclient -lz -lm
+CC	= gcc -I. -I../../include -DHAS_MYSQL -I/usr/include/mariadb/ -DUSE_SASL_AUTH -DUSE_SASL_AUTH -DDEF_SERVER_SASL_TYPE=\"dovecot\" -DUSE_TLS -DNO_EAI -DDEF_SMTPUTF8_ENABLE=\"no\" -DHAS_DEV_URANDOM -DSNAPSHOT -DUSE_DYNAMIC_LIBS -DUSE_DYNAMIC_MAPS $(WARN)
+OPT	= -O
+DEBUG	= -g
+AWK	= awk
+STRCASE = 
+EXPORT	= CCARGS='-I. -I../../include -DHAS_MYSQL -I/usr/include/mariadb/ -DUSE_SASL_AUTH -DUSE_SASL_AUTH -DDEF_SERVER_SASL_TYPE=\"dovecot\" -DUSE_TLS -DNO_EAI -DDEF_SMTPUTF8_ENABLE=\"no\" -DHAS_DEV_URANDOM -DSNAPSHOT -DUSE_DYNAMIC_LIBS -DUSE_DYNAMIC_MAPS' OPT='-O' DEBUG='-g'
+WARN	= -Wall -Wno-comment -Wformat -Wimplicit -Wmissing-prototypes \
+	-Wparentheses -Wstrict-prototypes -Wswitch -Wuninitialized \
+	-Wunused -Wno-missing-braces -fno-common
+DEFINED_MAP_TYPES = mysql dev_urandom
+MAKE_FIX = 
+# Switch between Postfix static and dynamically-linked libraries.
+AR	= :
+RANLIB	= :
+LIB_PREFIX = postfix-
+LIB_SUFFIX = .so
+SHLIB_CFLAGS = -fPIC
+SHLIB_DIR = /usr/lib/postfix
+SHLIB_LD = gcc -shared -Wl,-soname,${LIB}
+SHLIB_SYSLIBS = -lssl -lcrypto -ldb -lnsl -lresolv -ldl
+SHLIB_RPATH = -Wl,--enable-new-dtags -Wl,-rpath,${SHLIB_DIR}
+# Switch between dynamicmaps.cf plugins and hard-linked databases.
+NON_PLUGIN_MAP_OBJ = 
+PLUGIN_MAP_OBJ = $(MAP_OBJ)
+PLUGIN_MAP_OBJ_UPDATE = plugin_map_obj_update
+PLUGIN_MAP_SO_MAKE = plugin_map_so_make
+PLUGIN_MAP_SO_UPDATE = plugin_map_so_update
+PLUGIN_LD = gcc -shared
+POSTFIX_INSTALL_OPTS = 
+# Application-specific rules.
